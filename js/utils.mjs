@@ -14,6 +14,6 @@ export async  function loadHeaderFooter(){
 }
 
 async function getTemplate(fileName) {
-    const path = `/templates/${fileName}`;
+    const path = `templates/${fileName}`;
     return await fetch(path).then((data) => data.text());
 }
