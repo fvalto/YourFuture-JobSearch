@@ -1,0 +1,114 @@
+:root {
+    /* Fonts */
+    --font-body: Arial, sans-serif;
+    --font-headline: 'Trebuchet MS', sans-serif;
+
+    /* Colors */
+    --primary-color: #001021;
+    --secondary-color: #034748;
+    --light-blue: #11B5E4;
+    --medium-blue: #0CAADC;
+    --dark-blue: #1481BA;
+
+    /* Font sizes */
+    --font-base: 18px;
+    --small-font: 0.8em;
+    --large-font: 1.2em;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--font-base);
+    color: var(--primary-color);
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo img {
+    width: 150px;
+}
+
+#header-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40vh;
+    background: linear-gradient(19deg, var(--color-1), var(--color-2));
+    transform-origin: 0px 0px;
+    transform: skewY(-3deg);
+    overflow: hidden;
+    z-index: -1;
+    background-color: #1481BA;
+    border-bottom: #11B5E4 solid 10px;
+}
+
+header a {
+    font-style: italic;
+    font-size: 5em;
+    text-decoration: none;
+    color: #001021;
+}
+
+header .highlight {
+    color: white;
+}
+
+main {
+    text-align: center;
+    padding: 5em 0;
+}
+
+main a {
+    display: inline-block;
+    margin: 1.5em 0;
+    padding: 1.5rem 2rem;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: var(--primary-color);
+    border-radius: 25px;
+    transition: all .4s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+main a:hover {
+    color: var(--light-blue);
+    box-shadow: 0 1.75rem 3rem 0rem rgba(50, 0, 100, .4);
+}
+
+footer {
+    font-size: var(--small-font);
+    padding: 1em;
+    text-align: center;
+}
+
+@media screen and (max-width: 500px) {
+    .logo {
+        text-align: center;
+        margin: 0;
+    }
+
+    .logo a {
+        font-size: 4.5em;
+    }
+
+    .logo img {
+        width: 120px;
+    }
+
+    main a {
+        display: block;
+        margin: 1em;
+    }
+}
