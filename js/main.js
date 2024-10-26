@@ -1,3 +1,5 @@
-import { loadHeaderFooter } from "./utils.mjs";
+import { loadHeaderFooter, getPosition} from "./utils.mjs";
 
 loadHeaderFooter();
+
+getPosition();
