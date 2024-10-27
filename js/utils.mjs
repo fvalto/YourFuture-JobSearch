@@ -11,6 +11,7 @@ export async function renderTemplate(partialFileName, parentElement, position = 
 export async function loadHeaderFooter() {
     await renderTemplate('header.html', qs('#header'));
     await renderTemplate('footer.html', qs('#footer'));
+    renderVisits();
 }
 
 async function getTemplate(fileName) {
@@ -46,6 +47,26 @@ export async function getJobs(position = "developer") {
     }
 }
 
+export function getSkills() {
+    document.getElementById('searchButton').addEventListener('click', async () => {
+        const skillUuid = "2c77c703bd66e104c78b1392c3203362"; // Replace this with dynamic UUID lookup based on user input
+        const apiUrl = `/path/to/api/v1/skills/${skillUuid}/related_jobs`;
+
+        try {
+            const response = await fetch(apiUrl);
+            if (response.status === 200) {
+                const data = await response.json();
+                displayJobs(data.jobs);
+            } else {
+                document.getElementById('results').innerText = 'No jobs found for this skill.';
+            }
+        } catch (error) {
+            console.error('Error fetching jobs:', error);
+        }
+    });
+    
+}
+
 export function getPosition() {
     const positionInput = qs("#position-input");
     positionInput.addEventListener("change", async function () {
@@ -71,4 +92,16 @@ export function showResults(jobArray) {
 
         resultsDiv.innerHTML += template;
     });
+}
+
+export function renderVisits() {
+    const visitsDisplay = document.querySelector("#pagevisits");
+    let numVisits = Number(window.localStorage.getItem("numVisits-ls")) || 0;
+    if (numVisits !== 0) {
+        visitsDisplay.textContent = numVisits;
+    } else {
+        visitsDisplay.textContent = `This is your first visit. 😉😎 Welcome! 👌`;
+    }
+    numVisits++;
+    localStorage.setItem("numVisits-ls", numVisits);
 }
