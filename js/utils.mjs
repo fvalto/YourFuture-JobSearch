@@ -11,7 +11,6 @@ export async function renderTemplate(partialFileName, parentElement, position = 
 export async function loadHeaderFooter() {
     await renderTemplate('header.html', qs('#header'));
     await renderTemplate('footer.html', qs('#footer'));
-    renderVisits();
 }
 
 async function getTemplate(fileName) {
@@ -37,7 +36,6 @@ export async function getJobs(position = "developer") {
 
         const data = await response.json();
 
-        // Access the correct path for SearchResultItems
         const jobArray = Array.isArray(data.SearchResult.SearchResultItems) ? data.SearchResult.SearchResultItems : [];
 
         return jobArray;
@@ -45,26 +43,6 @@ export async function getJobs(position = "developer") {
         console.error('There has been a problem with your fetch operation:', error);
         return [];
     }
-}
-
-export function getSkills() {
-    document.getElementById('searchButton').addEventListener('click', async () => {
-        const skillUuid = "2c77c703bd66e104c78b1392c3203362"; // Replace this with dynamic UUID lookup based on user input
-        const apiUrl = `/path/to/api/v1/skills/${skillUuid}/related_jobs`;
-
-        try {
-            const response = await fetch(apiUrl);
-            if (response.status === 200) {
-                const data = await response.json();
-                displayJobs(data.jobs);
-            } else {
-                document.getElementById('results').innerText = 'No jobs found for this skill.';
-            }
-        } catch (error) {
-            console.error('Error fetching jobs:', error);
-        }
-    });
-    
 }
 
 export function getPosition() {
@@ -86,22 +64,72 @@ export function showResults(jobArray) {
           <h3 class="job-title">${job.MatchedObjectDescriptor.PositionTitle}</h3>
           <p class="company-name">${job.MatchedObjectDescriptor.OrganizationName}</p>
           <p class="location">Location: ${job.MatchedObjectDescriptor.PositionLocationDisplay}</p>
+          <button type="button" class="city-button" id="${job.MatchedObjectDescriptor.PositionLocationDisplay.split(',')[0]}">Get City Information</button>
           <p class="qualifications">${job.MatchedObjectDescriptor.QualificationSummary}</p>
           <a href="${job.MatchedObjectDescriptor.PositionURI}" class="apply-button">Apply Now</a>
         </div>`;
 
         resultsDiv.innerHTML += template;
     });
+
+    const cityButtons = resultsDiv.querySelectorAll('.city-button');
+    cityButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const cityName = button.id;
+            getCityData(cityName);
+        });
+    });
 }
 
-export function renderVisits() {
-    const visitsDisplay = document.querySelector("#pagevisits");
-    let numVisits = Number(window.localStorage.getItem("numVisits-ls")) || 0;
-    if (numVisits !== 0) {
-        visitsDisplay.textContent = numVisits;
-    } else {
-        visitsDisplay.textContent = `This is your first visit. 😉😎 Welcome! 👌`;
+async function getCityData(city) {
+    const url = `https://api.api-ninjas.com/v1/city?name=${city}&country=US`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'x-api-key': '0+TJvcQcf3i52szV3xdHvA==BUp4uG96Q1aJlE0S'
+        }
+    };
+
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        console.log(result);
+        displayCityDetails(result);
+    } catch (error) {
+        console.error(error);
     }
-    numVisits++;
-    localStorage.setItem("numVisits-ls", numVisits);
+}
+
+function displayCityDetails(cityData) {
+    const cityOverlay = document.getElementById("city-overlay");
+    cityOverlay.innerHTML = '';
+
+    const closeButton = `<span class='card-close'>❌</span>`;
+
+    if (cityData.length > 0) {
+        let template = 
+            `<div class="city-card">
+              ${closeButton}
+              <h3 class="city-name">${cityData[0].name}</h3>
+              <p class="state">State: ${cityData[0].region}</p>
+              <p class="latitude">Latitude: ${cityData[0].latitude}</p>
+              <p class="longitude">Longitude: ${cityData[0].longitude}</p>
+              <p class="population">Population: ${cityData[0].population}</p>
+            </div>`;
+        cityOverlay.innerHTML += template;
+    } else {
+        let noDataTemplate = 
+            `<div class="city-card">
+              ${closeButton}
+              <p>No city data found.</p>
+            </div>`;
+        cityOverlay.innerHTML += noDataTemplate;
+    }
+
+    cityOverlay.style.display = 'flex';
+
+    const cardCloseButton = cityOverlay.querySelector('.card-close');
+    cardCloseButton.addEventListener('click', () => {
+        cityOverlay.style.display = 'none';
+    });
 }
